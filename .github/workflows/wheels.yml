@@ -37,7 +37,7 @@ jobs:
   get_commit_message:
     name: Get commit message
     runs-on: ubuntu-latest
-    if: github.repository == 'scipy/scipy'
+    # if: github.repository == 'scipy/scipy'
     outputs:
       message: ${{ steps.commit_message.outputs.message }}
     steps:
@@ -235,39 +235,39 @@ jobs:
             ${{ matrix.buildplat[2] }} ${{ matrix.buildplat[3] }}
             ${{ matrix.buildplat[4] }}
 
-      - uses: conda-incubator/setup-miniconda@505e6394dae86d6a5c7fbb6e3fb8938e3e863830 # v3.1.1
-        with:
-          # for installation of anaconda-client, required for upload to
-          # anaconda.org
-          # default (and activated) environment name is test
-          # Note that this step is *after* specific pythons have been used to
-          # build and test the wheel
-          auto-update-conda: true
-          python-version: "3.11"
-          miniforge-version: latest
-          conda-remove-defaults: "true"
+      # - uses: conda-incubator/setup-miniconda@505e6394dae86d6a5c7fbb6e3fb8938e3e863830 # v3.1.1
+      #   with:
+      #     # for installation of anaconda-client, required for upload to
+      #     # anaconda.org
+      #     # default (and activated) environment name is test
+      #     # Note that this step is *after* specific pythons have been used to
+      #     # build and test the wheel
+      #     auto-update-conda: true
+      #     python-version: "3.11"
+      #     miniforge-version: latest
+      #     conda-remove-defaults: "true"
 
-      - name: Upload wheels
-        if: success()
-        shell: bash -el {0}
-        # see https://github.com/marketplace/actions/setup-miniconda for why
-        # `-el {0}` is required.
-        env:
-          SCIPY_STAGING_UPLOAD_TOKEN: ${{ secrets.SCIPY_STAGING_UPLOAD_TOKEN }}
-          SCIPY_NIGHTLY_UPLOAD_TOKEN: ${{ secrets.SCIPY_NIGHTLY_UPLOAD_TOKEN }}
-        run: |
-          conda install -y anaconda-client
-          source tools/wheels/upload_wheels.sh
-          set_upload_vars
-          # For cron jobs (restricted to main branch) or "Run workflow" trigger
-          # an upload to:
-          #
-          # https://anaconda.org/scientific-python-nightly-wheels/scipy
-          #
-          # Pushes to a maintenance branch that contain '[wheel build]' will
-          # cause wheels to be built and uploaded to:
-          #
-          # https://anaconda.org/multibuild-wheels-staging/scipy
-          #
-          # The tokens were originally generated at anaconda.org
-          upload_wheels
+      # - name: Upload wheels
+      #   if: success()
+      #   shell: bash -el {0}
+      #   # see https://github.com/marketplace/actions/setup-miniconda for why
+      #   # `-el {0}` is required.
+      #   env:
+      #     SCIPY_STAGING_UPLOAD_TOKEN: ${{ secrets.SCIPY_STAGING_UPLOAD_TOKEN }}
+      #     SCIPY_NIGHTLY_UPLOAD_TOKEN: ${{ secrets.SCIPY_NIGHTLY_UPLOAD_TOKEN }}
+      #   run: |
+      #     conda install -y anaconda-client
+      #     source tools/wheels/upload_wheels.sh
+      #     set_upload_vars
+      #     # For cron jobs (restricted to main branch) or "Run workflow" trigger
+      #     # an upload to:
+      #     #
+      #     # https://anaconda.org/scientific-python-nightly-wheels/scipy
+      #     #
+      #     # Pushes to a maintenance branch that contain '[wheel build]' will
+      #     # cause wheels to be built and uploaded to:
+      #     #
+      #     # https://anaconda.org/multibuild-wheels-staging/scipy
+      #     #
+      #     # The tokens were originally generated at anaconda.org
+      #     upload_wheels
